@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "ENI-Shop"
 include(":app")
 include(":movies")
+include(":library")
