@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.eni.ecole.enishop.ui.theme.ENIShopTheme
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar() {
