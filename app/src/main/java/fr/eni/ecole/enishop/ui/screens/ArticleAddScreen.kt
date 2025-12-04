@@ -45,8 +45,7 @@ fun ArticleAddScreen() {
     var title by rememberSaveable() { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
 
-    var priceText by rememberSaveable { mutableStateOf("") }
-    var price: Double? = priceText.toDoubleOrNull()
+    var price by rememberSaveable { mutableStateOf("") }
 
     var selectedCategory by rememberSaveable { mutableStateOf("") }
 
@@ -73,9 +72,9 @@ fun ArticleAddScreen() {
             label = "Description"
         )
         BaseTextField(
-            value = priceText,
+            value = price,
             onValueChange = {
-                priceText = it
+                price = it
             },
             label = "Prix"
         )
