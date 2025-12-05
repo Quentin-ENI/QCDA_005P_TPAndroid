@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import fr.eni.ecole.enishop.ui.screens.ArticleAddScreen
 import fr.eni.ecole.enishop.ui.screens.ArticleDetailsScreen
+import fr.eni.ecole.enishop.ui.screens.ArticleListScreen
 import fr.eni.ecole.enishop.ui.theme.ENIShopTheme
 import fr.eni.ecole.enishop.ui.shared.TopBar
 
@@ -42,14 +43,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ENIShopApp(modifier: Modifier = Modifier) {
-
-
     Column(
         modifier = modifier
     ) {
-//        ArticleDetailsScreen(
-//            articleId = 1
-//        )
-        ArticleAddScreen()
+        ArticleListScreen()
     }
 }
