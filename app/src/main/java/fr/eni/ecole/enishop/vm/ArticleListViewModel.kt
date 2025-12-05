@@ -11,6 +11,7 @@ import fr.eni.ecole.enishop.repository.ArticleRepository
 class ArticleListViewModel(private val repository: ArticleRepository) : ViewModel() {
 
     private var _allArticles = emptyList<Article>()
+
     private val _currentArticles = MutableStateFlow<List<Article>>(emptyList())
     val currentArticles = _currentArticles.asStateFlow()
 
@@ -22,7 +23,11 @@ class ArticleListViewModel(private val repository: ArticleRepository) : ViewMode
     }
 
     fun filterByCategory(category: String?) {
-        _currentArticles.value = _allArticles.filter { it.category == category }
+        if (category != null) {
+            _currentArticles.value = _allArticles.filter { it.category == category }
+        } else {
+            _currentArticles.value = _allArticles
+        }
     }
 
     companion object {
