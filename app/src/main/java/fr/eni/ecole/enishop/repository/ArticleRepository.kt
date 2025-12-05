@@ -14,4 +14,8 @@ class ArticleRepository {
     fun addArticle(article: Article): Long {
         return articleDao.insert(article);
     }
+
+    fun getAllArticles(): List<Article> {
+        return articleDao.findAll()
+    }
 }
