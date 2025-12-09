@@ -7,7 +7,7 @@ import fr.eni.ecole.enishop.dao.DaoType
 class ArticleRepository {
     val articleDao = DaoFactory.createArticleDAO(DaoType.MEMORY);
 
-    fun getArticle(id: Long): Article? {
+    fun getArticle(id: Long?): Article? {
         return articleDao.findById(id);
     }
 
