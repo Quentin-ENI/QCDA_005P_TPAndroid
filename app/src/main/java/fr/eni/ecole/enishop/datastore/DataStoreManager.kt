@@ -1,0 +1,28 @@
+package fr.eni.ecole.enishop.datastore
+
+import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
+// A vérifier
+private val Context.dataStore by preferencesDataStore(name = "user_preferences")
+
+object DataStoreManager {
+
+    private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
+
+    fun isDarkThemeEnabled(context: Context): Flow<Boolean> {
+        return context.dataStore.data.map { prefs ->
+            prefs[DARK_THEME_KEY] ?: false
+        }
+    }
+
+    suspend fun setDarkThemeEnabled(context: Context, enabled: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[DARK_THEME_KEY] = enabled
+        }
+    }
+}
