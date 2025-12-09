@@ -8,7 +8,7 @@ import fr.eni.ecole.enishop.ui.screens.ArticleDetailsScreen
 import org.junit.Rule
 import org.junit.Test
 
-class ArticleDetailScreenTest {
+class ArticleDetailsScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 

@@ -56,7 +56,6 @@ fun ArticleListScreen(
     modifier: Modifier = Modifier,
     viewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory),
     onArticleCardClick: (String) -> Unit,
-    onAddArticleClick: () -> Unit,
 ) {
     val articles by viewModel.currentArticles.collectAsState()
     val categories = viewModel.categories
@@ -89,11 +88,6 @@ fun ArticleListScreen(
             ArticleList(
                 articles = articles,
                 onArticleCardClick = onArticleCardClick
-            )
-            ArticleListFAB(
-                onClick = onAddArticleClick,
-                modifier = Modifier
-                    .padding(16.dp)
             )
         }
     }
@@ -210,13 +204,14 @@ fun ArticleItem(
 
 @Composable
 fun ArticleListFAB(
-    onClick: () -> Unit,
+    onNavigateToArticleForm: () -> Unit,
     modifier: Modifier = Modifier
-    ) {
+) {
     FloatingActionButton(
-        onClick = onClick,
-        modifier = modifier
+        onClick = onNavigateToArticleForm,
+        modifier = Modifier,
+        shape = CircleShape
     ) {
-        Icon(Icons.Filled.Add, "Floating action button.")
+        Icon(Icons.Filled.Add, "Go to article form.")
     }
 }
