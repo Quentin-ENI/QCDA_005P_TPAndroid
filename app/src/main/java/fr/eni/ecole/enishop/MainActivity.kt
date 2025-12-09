@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import fr.eni.ecole.enishop.datastore.DataStoreManager
 import fr.eni.ecole.enishop.nav.ArticleAddDestination
 import fr.eni.ecole.enishop.nav.ArticleDetailsDestination
 import fr.eni.ecole.enishop.nav.ArticleListDestination
@@ -34,7 +37,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ENIShopTheme {
+            val context = LocalContext.current
+
+            val isDarkTheme by DataStoreManager
+                .isDarkThemeEnabled(context)
+                .collectAsState(initial = false)
+
+            ENIShopTheme(darkTheme = isDarkTheme) {
                 ENIShopApp()
             }
         }
