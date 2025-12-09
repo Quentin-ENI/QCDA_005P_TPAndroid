@@ -11,12 +11,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import fr.eni.ecole.enishop.ui.screens.ArticleAddScreen
-import fr.eni.ecole.enishop.ui.screens.ArticleDetailScreen
 import fr.eni.ecole.enishop.ui.screens.ArticleDetailsScreen
-import fr.eni.ecole.enishop.ui.screens.ArticleListScreen
-import fr.eni.ecole.enishop.ui.theme.ENIShopTheme
 import fr.eni.ecole.enishop.ui.shared.TopBar
+import fr.eni.ecole.enishop.ui.theme.ENIShopTheme
 
 private const val TAG = "MAIN SCREEN"
 
@@ -47,6 +44,6 @@ fun ENIShopApp(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
     ) {
-        ArticleDetailScreen(1)
+        ArticleDetailsScreen(1)
     }
 }
