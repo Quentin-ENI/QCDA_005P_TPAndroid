@@ -11,6 +11,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import fr.eni.ecole.enishop.ui.screens.ArticleAddScreen
 import fr.eni.ecole.enishop.ui.screens.ArticleDetailsScreen
 import fr.eni.ecole.enishop.ui.screens.ArticleListScreen
@@ -20,8 +24,6 @@ import fr.eni.ecole.enishop.ui.shared.TopBar
 private const val TAG = "MAIN SCREEN"
 
 class MainActivity : ComponentActivity() {
-
-
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,10 @@ class MainActivity : ComponentActivity() {
                         TopBar()
                     }
                 ) { innerPadding ->
-                    ENIShopApp(modifier = Modifier.padding(innerPadding))
+                    ENIShopApp(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = rememberNavController()
+                    )
                 }
             }
         }
@@ -42,10 +47,52 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ENIShopApp(modifier: Modifier = Modifier) {
+fun ENIShopApp(
+    modifier: Modifier = Modifier,
+    navController : NavHostController
+) {
     Column(
         modifier = modifier
     ) {
-        ArticleListScreen()
+        EniShopNAvHost(navController)
+    }
+}
+
+@Composable
+fun EniShopNAvHost(
+    navController : NavHostController,
+    startDestination : String = ListDestination.route,
+    modifier: Modifier = Modifier,
+){
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = startDestination
+    ){
+        composable(HomeDestination.route){
+            ENIShopApp(navController = navController)
+        }
+        composable(ListDestination.route){
+            ArticleListScreen(
+                onArticleCardClick = {
+                    navController.navigate("${DetailDestination.route}/$it")
+                },
+                onAddArticleClick = {
+                    navController.navigate(AddDestination.route)
+                }
+            )
+        }
+        composable(
+            route = DetailDestination.routeWithArgs,
+            arguments = DetailDestination.args
+        ) {
+            navBackStackEntry ->
+                val idArticleValue = navBackStackEntry
+                    .arguments?.getLong(DetailDestination.idValueArgArticle)
+            ArticleDetailsScreen(idArticleValue)
+        }
+        composable(route = AddDestination.route){
+            ArticleAddScreen(navController)
+        }
     }
 }

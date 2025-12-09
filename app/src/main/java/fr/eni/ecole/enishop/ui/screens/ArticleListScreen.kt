@@ -2,7 +2,9 @@ package fr.eni.ecole.enishop.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,11 +21,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,34 +54,48 @@ import fr.eni.ecole.enishop.vm.ArticleListViewModel
 @Composable
 fun ArticleListScreen(
     modifier: Modifier = Modifier,
-    viewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory)
+    viewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory),
+    onArticleCardClick: (String) -> Unit,
+    onAddArticleClick: () -> Unit,
 ) {
     val articles by viewModel.currentArticles.collectAsState()
     val categories = viewModel.categories
 
     var selectedCategory by rememberSaveable { mutableStateOf<String?>(null) }
 
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxSize()
+    Box(
+        modifier = modifier.fillMaxSize()
     ) {
-        CategoryFilterChip(
-            categories = categories,
-            selectedCategory = selectedCategory,
-            onCategorySelected = { cat ->
-                if (selectedCategory == cat) {
-                    selectedCategory = null
-                } else {
-                    selectedCategory = cat
+        Column(
+            modifier = modifier
+                .padding(16.dp)
+                .fillMaxSize()
+        ) {
+            CategoryFilterChip(
+                categories = categories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { cat ->
+                    if (selectedCategory == cat) {
+                        selectedCategory = null
+                    } else {
+                        selectedCategory = cat
+                    }
+                    viewModel.filterByCategory(selectedCategory)
                 }
-                viewModel.filterByCategory(selectedCategory)
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        ArticleList(articles = articles)
+            ArticleList(
+                articles = articles,
+                onArticleCardClick = onArticleCardClick
+            )
+            ArticleListFAB(
+                onClick = onAddArticleClick,
+                modifier = Modifier
+                    .padding(16.dp)
+            )
+        }
     }
 }
 
@@ -109,6 +127,7 @@ fun CategoryFilterChip(
 @Composable
 fun ArticleList(
     articles: List<Article>,
+    onArticleCardClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (articles.isEmpty()) {
@@ -128,16 +147,21 @@ fun ArticleList(
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             items(articles) { article ->
-                ArticleItem(article = article)
+                ArticleItem(article = article,
+                    onArticleCardClick = onArticleCardClick)
             }
         }
     }
 }
 
 @Composable
-fun ArticleItem(article: Article) {
+fun ArticleItem(
+    article: Article,
+    onArticleCardClick: (String) -> Unit,
+    ) {
     Card(
         modifier = Modifier
+            .clickable { onArticleCardClick(article.id.toString()) }
             .fillMaxWidth()
             .height(200.dp),
         border = BorderStroke(
@@ -181,5 +205,18 @@ fun ArticleItem(article: Article) {
                 fontSize = 16.sp,
             )
         }
+    }
+}
+
+@Composable
+fun ArticleListFAB(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+    ) {
+    FloatingActionButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(Icons.Filled.Add, "Floating action button.")
     }
 }
