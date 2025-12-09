@@ -37,7 +37,7 @@ class ArticleDaoMemoryImpl : ArticleDao {
         )
     );
 
-    override fun findById(id: Long): Article? {
+    override fun findById(id: Long?): Article? {
         val article = articles.find { it.id == id }
         return article
     }

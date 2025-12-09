@@ -2,7 +2,6 @@ package fr.eni.ecole.enishop.ui.screens
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,19 +29,18 @@ import coil.compose.AsyncImage
 import fr.eni.ecole.enishop.bo.Article
 import fr.eni.ecole.enishop.utils.toFrenchFormat
 import fr.eni.ecole.enishop.utils.toPriceFormat
-import fr.eni.ecole.enishop.vm.ArticleDetailsViewModel
+import fr.eni.ecole.enishop.vm.ArticleDetailViewModel
 
 @Composable
 fun ArticleDetailsScreen(
-    articleId: Long,
-    modifier: Modifier = Modifier,
-    viewModel: ArticleDetailsViewModel = viewModel(factory = ArticleDetailsViewModel.Factory)
+    articleId: Long?,
+    viewModel: ArticleDetailViewModel = viewModel(factory = ArticleDetailViewModel.Factory),
+    modifier: Modifier = Modifier
 ) {
     val article by viewModel.article.collectAsState()
 
-    // Charge l’article au démarrage
     LaunchedEffect(articleId) {
-        viewModel.loadArticle(articleId)
+        viewModel.getArticle(articleId)
     }
 
     if (article == null) {
@@ -55,7 +53,7 @@ fun ArticleDetailsScreen(
 @Composable
 fun ArticleDetails(
     article: Article,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val googleUrl = "https://www.google.com/search?q="

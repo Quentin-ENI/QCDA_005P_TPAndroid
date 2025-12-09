@@ -4,7 +4,7 @@ import fr.eni.ecole.enishop.bo.Article
 import fr.eni.ecole.enishop.dao.ArticleDao
 
 class ArticleDaoNetworkImpl : ArticleDao {
-    override fun findById(id: Long): Article? {
+    override fun findById(id: Long?): Article? {
         TODO("Not yet implemented")
     }
 
