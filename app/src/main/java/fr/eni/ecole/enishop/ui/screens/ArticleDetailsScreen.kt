@@ -1,5 +1,9 @@
 package fr.eni.ecole.enishop.ui.screens
 
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,6 +61,11 @@ fun ArticleDetailsScreen(
         modifier = modifier
     )
 
+    if (article == null) {
+        Text("Chargement...", Modifier.padding(16.dp))
+    } else {
+        ArticleDetails(article!!, modifier)
+    }
 }
 
 @Composable
@@ -69,6 +78,30 @@ fun ArticleDetails(
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
             modifier = modifier.fillMaxSize().padding(16.dp)
+    val context = LocalContext.current
+    val googleUrl = "https://www.google.com/search?q="
+
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = modifier.fillMaxSize().padding(16.dp)
+    ) {
+        Text(
+            text = article.name,
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.clickable {
+                val query = "${article.name} EniShop"
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("$googleUrl$query")
+                )
+                context.startActivity(intent)
+            }
+        )
+        Surface(
+            color = MaterialTheme.colorScheme.inverseOnSurface,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 text = article.name,
