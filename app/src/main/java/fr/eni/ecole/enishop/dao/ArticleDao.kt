@@ -3,14 +3,14 @@ package fr.eni.ecole.enishop.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import fr.eni.ecole.enishop.bo.Article
 
 @Dao
 interface ArticleDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     suspend fun insert(article: Article): Long
+
     @Delete
     suspend fun delete(article: Article)
 

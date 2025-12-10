@@ -31,20 +31,15 @@ import coil.compose.AsyncImage
 import fr.eni.ecole.enishop.bo.Article
 import fr.eni.ecole.enishop.utils.toFrenchFormat
 import fr.eni.ecole.enishop.utils.toPriceFormat
-import fr.eni.ecole.enishop.vm.ArticleDetailViewModel
+import fr.eni.ecole.enishop.vm.ArticleDetailsViewModel
 
 @Composable
 fun ArticleDetailsScreen(
     articleId: Long?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ArticleDetailsViewModel = viewModel(factory = ArticleDetailsViewModel.Factory)
 ) {
-    val context = LocalContext.current
-    val viewModel: ArticleDetailViewModel = viewModel(
-        factory = ArticleDetailViewModel.provideFactory(context)
-    )
-
     val article by viewModel.article.collectAsState()
-    val isFavorite by viewModel.isFavorite.collectAsState()
 
     LaunchedEffect(articleId) {
         if (articleId != null) {
@@ -57,12 +52,7 @@ fun ArticleDetailsScreen(
     } else {
         ArticleDetails(
             article = article!!,
-            isFavorite = isFavorite,
-            onToggleFavorite = {
-                viewModel.toggleFavorite()
-                val message = if (isFavorite) "Supprimé des favoris" else "Ajouté aux favoris"
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            },
+            viewModel = viewModel,
             modifier = modifier
         )
     }
@@ -71,12 +61,13 @@ fun ArticleDetailsScreen(
 @Composable
 fun ArticleDetails(
     article: Article,
-    isFavorite: Boolean,
-    onToggleFavorite: () -> Unit,
+    viewModel: ArticleDetailsViewModel,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val googleUrl = "https://www.google.com/search?q="
+
+    val isFavorite by viewModel.isFavorite.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -124,11 +115,19 @@ fun ArticleDetails(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .fillMaxWidth()
-                .clickable { onToggleFavorite() }
         ) {
             Checkbox(
                 checked = isFavorite,
-                onCheckedChange = { onToggleFavorite() }
+                onCheckedChange = {
+                    try {
+                        viewModel.toggleFavorite()
+                        val message = if (isFavorite) "Supprimé des favoris" else "Ajouté aux favoris"
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        val message = "L'enregistrement n'a pas fonctionné ${e.message}"
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
             )
             Text(text = "Favoris ?")
         }

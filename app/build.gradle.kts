@@ -70,6 +70,5 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     testImplementation("androidx.room:room-testing:$room_version")
-    //viewModel()implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
 }

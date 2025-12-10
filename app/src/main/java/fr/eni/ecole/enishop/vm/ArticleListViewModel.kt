@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import fr.eni.ecole.enishop.bo.Article
+import fr.eni.ecole.enishop.dao.memory.ArticleDaoMemoryImpl
+import fr.eni.ecole.enishop.db.AppDatabase
 import fr.eni.ecole.enishop.repository.ArticleRepository
 
 class ArticleListViewModel(private val repository: ArticleRepository) : ViewModel() {
@@ -39,7 +41,10 @@ class ArticleListViewModel(private val repository: ArticleRepository) : ViewMode
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                val repository = ArticleRepository(application.applicationContext)
+                val repository = ArticleRepository(
+                    AppDatabase.getInstance(application.applicationContext).articleDao(),
+                    ArticleDaoMemoryImpl()
+                )
                 return ArticleListViewModel(repository) as T
             }
         }

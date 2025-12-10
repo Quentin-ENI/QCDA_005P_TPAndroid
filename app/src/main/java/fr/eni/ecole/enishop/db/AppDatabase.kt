@@ -16,19 +16,21 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun articleDao(): ArticleDao
 
     companion object {
-        @Volatile
+
         private var INSTANCE: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
+            var instance = INSTANCE
+
+            if (instance == null) {
+                instance = Room.databaseBuilder(
+                    context,
                     AppDatabase::class.java,
-                    "enishop_database"
-                ).build()
+                    "EniShopDatabase.db"
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
-                instance
             }
+            return instance
         }
     }
 }

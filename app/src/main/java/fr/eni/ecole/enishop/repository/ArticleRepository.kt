@@ -1,13 +1,12 @@
 package fr.eni.ecole.enishop.repository
 
-import android.content.Context
 import fr.eni.ecole.enishop.bo.Article
-import fr.eni.ecole.enishop.dao.memory.ArticleDaoMemoryImpl
-import fr.eni.ecole.enishop.db.AppDatabase
+import fr.eni.ecole.enishop.dao.ArticleDao
 
-class ArticleRepository(context: Context) {
-    private val articleDaoMemory = ArticleDaoMemoryImpl()
-    private val articleDaoRoom = AppDatabase.getInstance(context).articleDao()
+class ArticleRepository(
+    private val articleDaoRoom: ArticleDao,
+    private val articleDaoMemory: ArticleDao
+) {
     suspend fun getArticle(id: Long): Article? {
         return articleDaoMemory.findById(id)
     }
