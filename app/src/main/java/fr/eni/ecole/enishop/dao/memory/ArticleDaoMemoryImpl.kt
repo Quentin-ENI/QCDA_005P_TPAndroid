@@ -37,19 +37,24 @@ class ArticleDaoMemoryImpl : ArticleDao {
         )
     );
 
-    override fun findById(id: Long?): Article? {
+    override suspend fun findById(id: Long): Article? {
         val article = articles.find { it.id == id }
         return article
     }
 
-    override fun insert(article: Article): Long {
-        val id = articles.size + 1
-        article.id = id.toLong()
-        articles.add(article)
-        return article.id
+    override suspend fun insert(article: Article): Long {
+        val newId = (articles.maxOfOrNull { it.id } ?: 0) + 1
+        val articleToSave = article.copy(id = newId)
+        articles.add(articleToSave)
+
+        return newId
     }
 
-   override fun findAll(): List<Article> {
+   override suspend fun findAll(): List<Article> {
         return articles
+    }
+
+    override suspend fun delete(article: Article) {
+        articles.remove(article)
     }
 }

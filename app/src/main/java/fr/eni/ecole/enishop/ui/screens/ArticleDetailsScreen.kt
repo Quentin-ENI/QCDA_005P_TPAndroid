@@ -2,6 +2,7 @@ package fr.eni.ecole.enishop.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -29,34 +31,43 @@ import coil.compose.AsyncImage
 import fr.eni.ecole.enishop.bo.Article
 import fr.eni.ecole.enishop.utils.toFrenchFormat
 import fr.eni.ecole.enishop.utils.toPriceFormat
-import fr.eni.ecole.enishop.vm.ArticleDetailViewModel
+import fr.eni.ecole.enishop.vm.ArticleDetailsViewModel
 
 @Composable
 fun ArticleDetailsScreen(
     articleId: Long?,
-    viewModel: ArticleDetailViewModel = viewModel(factory = ArticleDetailViewModel.Factory),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ArticleDetailsViewModel = viewModel(factory = ArticleDetailsViewModel.Factory)
 ) {
     val article by viewModel.article.collectAsState()
 
     LaunchedEffect(articleId) {
-        viewModel.getArticle(articleId)
+        if (articleId != null) {
+            viewModel.loadArticle(articleId)
+        }
     }
 
     if (article == null) {
         Text("Chargement...", Modifier.padding(16.dp))
     } else {
-        ArticleDetails(article!!, modifier)
+        ArticleDetails(
+            article = article!!,
+            viewModel = viewModel,
+            modifier = modifier
+        )
     }
 }
 
 @Composable
 fun ArticleDetails(
     article: Article,
+    viewModel: ArticleDetailsViewModel,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val googleUrl = "https://www.google.com/search?q="
+
+    val isFavorite by viewModel.isFavorite.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -98,13 +109,25 @@ fun ArticleDetails(
             Text(text = "Prix : ${article.price.toPriceFormat()} €")
             Text(text = "Date de sortie : ${article.date.toFrenchFormat()}")
         }
+
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = modifier.fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .fillMaxWidth()
         ) {
             Checkbox(
-                checked = true,
-                onCheckedChange = null
+                checked = isFavorite,
+                onCheckedChange = {
+                    try {
+                        viewModel.toggleFavorite()
+                        val message = if (isFavorite) "Supprimé des favoris" else "Ajouté aux favoris"
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        val message = "L'enregistrement n'a pas fonctionné ${e.message}"
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
             )
             Text(text = "Favoris ?")
         }

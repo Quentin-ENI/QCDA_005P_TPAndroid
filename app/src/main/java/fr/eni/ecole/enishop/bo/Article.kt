@@ -1,17 +1,18 @@
 package fr.eni.ecole.enishop.bo
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.Date
 
+@Entity(tableName = "Article")
 data class Article(
-    var id: Long,
-    var name: String,
-    var description: String,
-    var price: Double,
-    var urlImage: String,
-    var category: String,
-    var date: Date
-) {
-    override fun toString(): String {
-        return "Article(id=$id, name='$name', description='$description', price=$price, urlImage='$urlImage', category='$category', date=$date)"
-    }
-}
+    @PrimaryKey(autoGenerate = false)
+   val id: Long = 0,
+   val name: String,
+   val description: String,
+   val price: Double,
+   val urlImage: String,
+   val category: String,
+   val date: Date = Date()
+)
+    

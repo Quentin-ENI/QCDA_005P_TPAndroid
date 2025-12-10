@@ -2,10 +2,14 @@ package fr.eni.ecole.enishop.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import fr.eni.ecole.enishop.bo.Article
+import fr.eni.ecole.enishop.dao.memory.ArticleDaoMemoryImpl
+import fr.eni.ecole.enishop.db.AppDatabase
 import fr.eni.ecole.enishop.repository.ArticleRepository
 
 class ArticleListViewModel(private val repository: ArticleRepository) : ViewModel() {
@@ -18,8 +22,10 @@ class ArticleListViewModel(private val repository: ArticleRepository) : ViewMode
     val categories = listOf("electronics", "jewelery", "men's clothing", "women's clothing")
 
     init {
-        _allArticles = repository.getAllArticles()
-        _currentArticles.value = _allArticles
+        viewModelScope.launch {
+            _allArticles = repository.getAllArticles()
+            _currentArticles.value = _allArticles
+        }
     }
 
     fun filterByCategory(category: String?) {
@@ -34,7 +40,11 @@ class ArticleListViewModel(private val repository: ArticleRepository) : ViewMode
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                val repository = ArticleRepository()
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val repository = ArticleRepository(
+                    AppDatabase.getInstance(application.applicationContext).articleDao(),
+                    ArticleDaoMemoryImpl()
+                )
                 return ArticleListViewModel(repository) as T
             }
         }

@@ -1,21 +1,25 @@
 package fr.eni.ecole.enishop.repository
 
 import fr.eni.ecole.enishop.bo.Article
-import fr.eni.ecole.enishop.dao.DaoFactory
-import fr.eni.ecole.enishop.dao.DaoType
+import fr.eni.ecole.enishop.dao.ArticleDao
 
-class ArticleRepository {
-    val articleDao = DaoFactory.createArticleDAO(DaoType.MEMORY);
-
-    fun getArticle(id: Long?): Article? {
-        return articleDao.findById(id);
+class ArticleRepository(
+    private val articleDaoRoom: ArticleDao,
+    private val articleDaoMemory: ArticleDao
+) {
+    suspend fun getArticle(id: Long): Article? {
+        return articleDaoMemory.findById(id)
     }
-
-    fun addArticle(article: Article): Long {
-        return articleDao.insert(article);
+    suspend fun addFavorite(article: Article) {
+        articleDaoRoom.insert(article)
     }
-
-    fun getAllArticles(): List<Article> {
-        return articleDao.findAll()
+    suspend fun removeFavorite(article: Article) {
+        articleDaoRoom.delete(article)
+    }
+    suspend fun isFavorite(id: Long): Boolean {
+        return articleDaoRoom.findById(id) != null
+    }
+    suspend fun getAllArticles(): List<Article> {
+        return articleDaoMemory.findAll()
     }
 }
