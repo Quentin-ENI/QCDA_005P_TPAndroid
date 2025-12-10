@@ -1,3 +1,4 @@
+/*
 package fr.eni.ecole.enishop.vm
 
 import androidx.lifecycle.ViewModel
@@ -32,4 +33,4 @@ class ArticleDetailViewModel (
             }
         }
     }
-}
+}*/
