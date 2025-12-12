@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import fr.eni.ecole.enishop.bo.Article
 import fr.eni.ecole.enishop.dao.memory.ArticleDaoMemoryImpl
 import fr.eni.ecole.enishop.db.AppDatabase
+import fr.eni.ecole.enishop.network.RetrofitClient
 import fr.eni.ecole.enishop.repository.ArticleRepository
 
 class ArticleListViewModel(private val repository: ArticleRepository) : ViewModel() {
@@ -19,12 +20,14 @@ class ArticleListViewModel(private val repository: ArticleRepository) : ViewMode
     private val _currentArticles = MutableStateFlow<List<Article>>(emptyList())
     val currentArticles = _currentArticles.asStateFlow()
 
-    val categories = listOf("electronics", "jewelery", "men's clothing", "women's clothing")
+    val _categories = MutableStateFlow<List<String>>(emptyList())
+    val categories = _categories.asStateFlow()
 
     init {
         viewModelScope.launch {
             _allArticles = repository.getAllArticles()
             _currentArticles.value = _allArticles
+            _categories.value = repository.getAllCategories()
         }
     }
 
@@ -43,7 +46,7 @@ class ArticleListViewModel(private val repository: ArticleRepository) : ViewMode
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 val repository = ArticleRepository(
                     AppDatabase.getInstance(application.applicationContext).articleDao(),
-                    ArticleDaoMemoryImpl()
+                    RetrofitClient.fakeStoreApiService
                 )
                 return ArticleListViewModel(repository) as T
             }

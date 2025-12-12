@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import fr.eni.ecole.enishop.bo.Article
 import fr.eni.ecole.enishop.dao.memory.ArticleDaoMemoryImpl
 import fr.eni.ecole.enishop.db.AppDatabase
+import fr.eni.ecole.enishop.network.RetrofitClient
 import fr.eni.ecole.enishop.repository.ArticleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,12 +25,12 @@ class ArticleDetailsViewModel(private val repository: ArticleRepository) : ViewM
 
     fun loadArticle(articleId: Long) {
         viewModelScope.launch {
-            val fetchedArticle = repository.getArticle(articleId)
-            _article.value = fetchedArticle
+//            val fetchedArticle = repository.getArticle(articleId)
+//            _article.value = fetchedArticle
 
-            if (fetchedArticle != null) {
-                _isFavorite.value = repository.isFavorite(articleId)
-            }
+//            if (fetchedArticle != null) {
+//                _isFavorite.value = repository.isFavorite(articleId)
+//            }
         }
     }
 
@@ -58,7 +59,7 @@ class ArticleDetailsViewModel(private val repository: ArticleRepository) : ViewM
                 return ArticleDetailsViewModel(
                     ArticleRepository(
                         AppDatabase.getInstance(application.applicationContext).articleDao(),
-                        ArticleDaoMemoryImpl()
+                        RetrofitClient.fakeStoreApiService
                     )
                 ) as T
             }

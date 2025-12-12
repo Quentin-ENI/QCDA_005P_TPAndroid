@@ -58,7 +58,7 @@ fun ArticleListScreen(
     onArticleCardClick: (String) -> Unit,
 ) {
     val articles by viewModel.currentArticles.collectAsState()
-    val categories = viewModel.categories
+    val categories by viewModel.categories.collectAsState(initial = emptyList())
 
     var selectedCategory by rememberSaveable { mutableStateOf<String?>(null) }
 
