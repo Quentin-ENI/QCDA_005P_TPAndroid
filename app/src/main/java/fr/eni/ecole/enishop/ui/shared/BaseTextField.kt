@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -23,6 +25,7 @@ fun BaseTextField(
     value: String,
     onValueChange : (String) -> Unit,
     label: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -46,13 +49,12 @@ fun BaseTextField(
                 .padding(top = 16.dp, start = 16.dp,bottom = 16.dp),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
-
-
         )
         TextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = keyboardOptions
         )
     }
 

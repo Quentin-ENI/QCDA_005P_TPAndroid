@@ -8,14 +8,14 @@ import java.util.Date
 @Entity(tableName = "Article")
 data class Article(
     @PrimaryKey(autoGenerate = false)
-   val id: Long = 0,
+   var id: Long = 0,
     @Json(name = "title")
-   val name: String = "",
-   val description: String = "",
-   val price: Double = 0.0,
+   var name: String = "",
+   var description: String = "",
+   var price: Double = 0.0,
     @Json(name = "image")
-   val urlImage: String = "",
-   val category: String = "",
+   var urlImage: String = "",
+   var category: String = "",
     @Json(ignore = true)
-   val date: Date = Date()
+   var date: Date = Date()
 )

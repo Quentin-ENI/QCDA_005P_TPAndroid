@@ -9,38 +9,47 @@ import fr.eni.ecole.enishop.bo.Article
 import fr.eni.ecole.enishop.db.AppDatabase
 import fr.eni.ecole.enishop.network.RetrofitClient
 import fr.eni.ecole.enishop.repository.ArticleRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ArticleDetailsViewModel(private val repository: ArticleRepository) : ViewModel() {
+class ArticleAddViewModel(
+    private val articleRepository: ArticleRepository
+) : ViewModel() {
 
-    private val _article = MutableStateFlow<Article?>(null)
+    private val _article = MutableStateFlow<Article>(Article())
     val article = _article.asStateFlow()
 
-    private val _isFavorite = MutableStateFlow<Boolean>(false)
-    val isFavorite = _isFavorite.asStateFlow()
+    private val _categories = MutableStateFlow<List<String>>(emptyList())
+    val categories = _categories.asStateFlow()
 
-    fun loadArticle(articleId: Long) {
-        viewModelScope.launch {
-            val fetchedArticle = repository.getArticle(articleId)
-            _article.value = fetchedArticle
-            _isFavorite.value = repository.isFavorite(articleId)
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            _categories.value = articleRepository.getAllCategories()
         }
     }
 
-    fun toggleFavorite() {
-        viewModelScope.launch {
-            val article = _article.value
-            val isFavorite = _isFavorite.value
-
-            if (isFavorite) {
-                repository.removeFavorite(article!!)
-            } else {
-                repository.addFavorite(article!!)
-            }
-            _isFavorite.value = !isFavorite
+    fun createArticle() {
+        viewModelScope.launch(Dispatchers.IO) {
+            articleRepository.createArticle(_article.value)
         }
+    }
+
+    fun setArticleName(name: String) {
+        _article.value = _article.value.copy(name = name)
+    }
+
+    fun setArticlePrice(price: String) {
+        _article.value = _article.value.copy(price = price.toDouble())
+    }
+
+    fun setArticleDescription(description: String) {
+        _article.value = _article.value.copy(description = description)
+    }
+
+    fun setArticleCategory(category: String) {
+        _article.value = _article.value.copy(category = category)
     }
 
     companion object {
@@ -51,7 +60,7 @@ class ArticleDetailsViewModel(private val repository: ArticleRepository) : ViewM
                 extras: CreationExtras
             ): T {
                 val application = checkNotNull(extras[APPLICATION_KEY])
-                return ArticleDetailsViewModel(
+                return ArticleAddViewModel(
                     ArticleRepository(
                         AppDatabase.getInstance(application.applicationContext).articleDao(),
                         RetrofitClient.fakeStoreApiService
@@ -61,4 +70,3 @@ class ArticleDetailsViewModel(private val repository: ArticleRepository) : ViewM
         }
     }
 }
-
